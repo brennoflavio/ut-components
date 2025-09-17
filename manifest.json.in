@@ -1,0 +1,15 @@
+{
+    "name": "ut-components.brennoflavio",
+    "description": "Components to develop Python Ubuntu Touch applications",
+    "architecture": "all",
+    "title": "UT Components",
+    "hooks": {
+        "ut-components": {
+            "apparmor": "ut-components.apparmor",
+            "desktop":  "ut-components.desktop"
+        }
+    },
+    "version": "@BUILD_VERSION@",
+    "maintainer": "Brenno Flávio de Almeida <contato@brennoflavio.com.br>",
+    "framework" : "@CLICK_FRAMEWORK@"
+}
