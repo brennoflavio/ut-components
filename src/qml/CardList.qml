@@ -31,6 +31,7 @@ import QtGraphicalEffects 1.0
  * - Empty state message when no items are present
  * - Click signal for handling card selection
  * - Thumbnail image or icon display for each card
+ * - Optional pull-to-refresh functionality
  *
  * Example usage without search:
  * \qml
@@ -56,14 +57,28 @@ import QtGraphicalEffects 1.0
  * }
  * \endqml
  *
+ * Example usage with pull-to-refresh:
+ * \qml
+ * CardList {
+ *     height: units.gu(40)
+ *     enablePullToRefresh: true
+ *     refreshing: loadingState
+ *     items: myDataModel
+ *     onRefreshRequested: loadData()
+ * }
+ * \endqml
+ *
  * Properties:
  * - items (array): Array of objects containing card data (title, subtitle, icon, thumbnailSource)
  * - emptyMessage (string): Message displayed when items array is empty (default: "No items")
  * - showSearchBar (bool): Whether to show the search bar (default: false)
  * - searchPlaceholder (string): Placeholder text for search field (default: "Search")
+ * - enablePullToRefresh (bool): Whether to enable pull-to-refresh (default: false)
+ * - refreshing (bool): Whether the refresh operation is in progress (default: false)
  *
  * Signals:
  * - itemClicked(var item): Emitted when a card is clicked, passes the clicked item object
+ * - refreshRequested(): Emitted when pull-to-refresh is triggered
  */
 Column {
     id: cardList
@@ -72,8 +87,11 @@ Column {
     property string emptyMessage: i18n.tr("No items")
     property bool showSearchBar: false
     property string searchPlaceholder: i18n.tr("Search")
+    property bool enablePullToRefresh: false
+    property bool refreshing: false
 
     signal itemClicked(var item)
+    signal refreshRequested
 
     width: parent.width
     spacing: units.gu(1)
@@ -108,109 +126,117 @@ Column {
         }
     }
 
-    ListView {
-        id: listView
+    Flickable {
+        id: flickableContainer
         width: parent.width
         height: parent.height - (showSearchBar ? units.gu(6) : 0)
-        spacing: units.gu(1)
+        contentHeight: listView.contentHeight
         clip: true
+        visible: !enablePullToRefresh
 
-        model: {
-            var filtered = items;
-            if (showSearchBar && searchInput.text.length > 0) {
-                filtered = filtered.filter(function (item) {
-                        var searchValue = item.title || "";
-                        return searchValue.toLowerCase().indexOf(searchInput.text.toLowerCase()) !== -1;
-                    });
-            }
-            return filtered;
-        }
+        ListView {
+            id: listView
+            anchors.fill: parent
+            spacing: units.gu(1)
+            interactive: false
 
-        delegate: Item {
-            id: cardDelegate
-            width: parent.width - units.gu(4)
-            height: units.gu(10)
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            Rectangle {
-                id: background
-                anchors.fill: parent
-                color: "transparent"
-                radius: units.gu(1)
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: cardList.itemClicked(modelData)
-                    onPressed: background.opacity = 0.7
-                    onReleased: background.opacity = 1.0
-                    onCanceled: background.opacity = 1.0
+            model: {
+                var filtered = items;
+                if (showSearchBar && searchInput.text.length > 0) {
+                    filtered = filtered.filter(function (item) {
+                            var searchValue = item.title || "";
+                            return searchValue.toLowerCase().indexOf(searchInput.text.toLowerCase()) !== -1;
+                        });
                 }
+                return filtered;
+            }
 
-                RowLayout {
+            delegate: Item {
+                id: cardDelegate
+                width: parent.width - units.gu(4)
+                height: units.gu(10)
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle {
+                    id: background
                     anchors.fill: parent
-                    anchors.margins: units.gu(1)
-                    spacing: units.gu(2)
+                    color: "transparent"
+                    radius: units.gu(1)
 
-                    Rectangle {
-                        id: thumbnailContainer
-                        width: units.gu(8)
-                        height: units.gu(8)
-                        radius: units.gu(1)
-                        color: theme.palette.normal.base
-                        Layout.alignment: Qt.AlignVCenter
-
-                        Image {
-                            id: thumbnail
-                            anchors.fill: parent
-                            source: modelData.thumbnailSource || ""
-                            fillMode: Image.PreserveAspectCrop
-                            visible: false
-                        }
-
-                        Rectangle {
-                            id: mask
-                            anchors.fill: parent
-                            radius: units.gu(1)
-                            visible: false
-                        }
-
-                        OpacityMask {
-                            anchors.fill: parent
-                            source: thumbnail
-                            maskSource: mask
-                            visible: (!!modelData.thumbnailSource) && !modelData.icon
-                        }
-
-                        Icon {
-                            anchors.centerIn: parent
-                            name: modelData.icon || "dialog-question-symbolic"
-                            width: units.gu(4)
-                            height: units.gu(4)
-                            color: theme.palette.normal.backgroundSecondaryText
-                            visible: (!!modelData.icon) || (!modelData.thumbnailSource && !modelData.icon)
-                        }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: cardList.itemClicked(modelData)
+                        onPressed: background.opacity = 0.7
+                        onReleased: background.opacity = 1.0
+                        onCanceled: background.opacity = 1.0
                     }
 
-                    Column {
-                        Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignVCenter
-                        spacing: units.gu(0.5)
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: units.gu(1)
+                        spacing: units.gu(2)
 
-                        Label {
-                            text: modelData.title || ""
-                            fontSize: "medium"
-                            color: theme.palette.normal.foregroundText
-                            elide: Text.ElideRight
-                            width: parent.width
+                        Rectangle {
+                            id: thumbnailContainer
+                            width: units.gu(8)
+                            height: units.gu(8)
+                            radius: units.gu(1)
+                            color: theme.palette.normal.base
+                            Layout.alignment: Qt.AlignVCenter
+
+                            Image {
+                                id: thumbnail
+                                anchors.fill: parent
+                                source: modelData.thumbnailSource || ""
+                                fillMode: Image.PreserveAspectCrop
+                                visible: false
+                            }
+
+                            Rectangle {
+                                id: mask
+                                anchors.fill: parent
+                                radius: units.gu(1)
+                                visible: false
+                            }
+
+                            OpacityMask {
+                                anchors.fill: parent
+                                source: thumbnail
+                                maskSource: mask
+                                visible: (!!modelData.thumbnailSource) && !modelData.icon
+                            }
+
+                            Icon {
+                                anchors.centerIn: parent
+                                name: modelData.icon || "dialog-question-symbolic"
+                                width: units.gu(4)
+                                height: units.gu(4)
+                                color: theme.palette.normal.backgroundSecondaryText
+                                visible: (!!modelData.icon) || (!modelData.thumbnailSource && !modelData.icon)
+                            }
                         }
 
-                        Label {
-                            text: modelData.subtitle || ""
-                            fontSize: "small"
-                            color: theme.palette.normal.backgroundTertiaryText
-                            elide: Text.ElideRight
-                            width: parent.width
-                            visible: text !== ""
+                        Column {
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignVCenter
+                            spacing: units.gu(0.5)
+
+                            Label {
+                                text: modelData.title || ""
+                                fontSize: "medium"
+                                color: theme.palette.normal.foregroundText
+                                elide: Text.ElideRight
+                                width: parent.width
+                            }
+
+                            Label {
+                                text: modelData.subtitle || ""
+                                fontSize: "small"
+                                color: theme.palette.normal.backgroundTertiaryText
+                                elide: Text.ElideRight
+                                width: parent.width
+                                visible: text !== ""
+                            }
                         }
                     }
                 }
@@ -219,6 +245,142 @@ Column {
 
         Label {
             visible: listView.model.length === 0
+            anchors.centerIn: parent
+            text: cardList.emptyMessage
+            fontSize: "large"
+            color: theme.palette.normal.backgroundSecondaryText
+        }
+    }
+
+    Flickable {
+        id: flickableWithPullToRefresh
+        width: parent.width
+        height: parent.height - (showSearchBar ? units.gu(6) : 0)
+        contentHeight: listViewWithRefresh.contentHeight
+        clip: true
+        visible: enablePullToRefresh
+
+        PullToRefresh {
+            id: pullToRefresh
+            parent: flickableWithPullToRefresh
+            target: flickableWithPullToRefresh
+            refreshing: cardList.refreshing
+            onRefresh: {
+                cardList.refreshRequested();
+            }
+        }
+
+        ListView {
+            id: listViewWithRefresh
+            anchors.fill: parent
+            spacing: units.gu(1)
+            interactive: false
+
+            model: {
+                var filtered = items;
+                if (showSearchBar && searchInput.text.length > 0) {
+                    filtered = filtered.filter(function (item) {
+                            var searchValue = item.title || "";
+                            return searchValue.toLowerCase().indexOf(searchInput.text.toLowerCase()) !== -1;
+                        });
+                }
+                return filtered;
+            }
+
+            delegate: Item {
+                id: cardDelegateWithRefresh
+                width: parent.width - units.gu(4)
+                height: units.gu(10)
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle {
+                    id: backgroundWithRefresh
+                    anchors.fill: parent
+                    color: "transparent"
+                    radius: units.gu(1)
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: cardList.itemClicked(modelData)
+                        onPressed: backgroundWithRefresh.opacity = 0.7
+                        onReleased: backgroundWithRefresh.opacity = 1.0
+                        onCanceled: backgroundWithRefresh.opacity = 1.0
+                    }
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: units.gu(1)
+                        spacing: units.gu(2)
+
+                        Rectangle {
+                            id: thumbnailContainerWithRefresh
+                            width: units.gu(8)
+                            height: units.gu(8)
+                            radius: units.gu(1)
+                            color: theme.palette.normal.base
+                            Layout.alignment: Qt.AlignVCenter
+
+                            Image {
+                                id: thumbnailWithRefresh
+                                anchors.fill: parent
+                                source: modelData.thumbnailSource || ""
+                                fillMode: Image.PreserveAspectCrop
+                                visible: false
+                            }
+
+                            Rectangle {
+                                id: maskWithRefresh
+                                anchors.fill: parent
+                                radius: units.gu(1)
+                                visible: false
+                            }
+
+                            OpacityMask {
+                                anchors.fill: parent
+                                source: thumbnailWithRefresh
+                                maskSource: maskWithRefresh
+                                visible: (!!modelData.thumbnailSource) && !modelData.icon
+                            }
+
+                            Icon {
+                                anchors.centerIn: parent
+                                name: modelData.icon || "dialog-question-symbolic"
+                                width: units.gu(4)
+                                height: units.gu(4)
+                                color: theme.palette.normal.backgroundSecondaryText
+                                visible: (!!modelData.icon) || (!modelData.thumbnailSource && !modelData.icon)
+                            }
+                        }
+
+                        Column {
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignVCenter
+                            spacing: units.gu(0.5)
+
+                            Label {
+                                text: modelData.title || ""
+                                fontSize: "medium"
+                                color: theme.palette.normal.foregroundText
+                                elide: Text.ElideRight
+                                width: parent.width
+                            }
+
+                            Label {
+                                text: modelData.subtitle || ""
+                                fontSize: "small"
+                                color: theme.palette.normal.backgroundTertiaryText
+                                elide: Text.ElideRight
+                                width: parent.width
+                                visible: text !== ""
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Label {
+            visible: listViewWithRefresh.model.length === 0
             anchors.centerIn: parent
             text: cardList.emptyMessage
             fontSize: "large"
