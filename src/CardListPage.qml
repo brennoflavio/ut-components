@@ -264,6 +264,70 @@ Page {
                     }]
                 onItemClicked: feedbackLabel.text = "Navigation: " + item.title
             }
+
+            Label {
+                text: "Performance Test - 100 Items with Mixed Content"
+                fontSize: "large"
+                font.bold: true
+                color: "orange"
+            }
+
+            CardList {
+                height: units.gu(35)
+                width: parent.width
+                showSearchBar: true
+                searchPlaceholder: i18n.tr("Search in 100 items...")
+                items: {
+                    var testItems = [];
+                    var categories = ["Document", "Image", "Video", "Audio", "Archive"];
+                    var thumbnailUrl = "https://brennoflavio.com.br/trips/ouro-preto/10.jpg";
+                    for (var i = 0; i < 100; i++) {
+                        var category = categories[i % categories.length];
+                        var hasThumb = (i % 3 === 0); // 1/3 have thumbnails
+                        testItems.push({
+                                "title": category + " " + (i + 1),
+                                "subtitle": "Item #" + (i + 1) + " - " + Math.floor(Math.random() * 100) + " MB",
+                                "thumbnailSource": hasThumb ? thumbnailUrl : "",
+                                "icon": hasThumb ? "" : "document-open"
+                            });
+                    }
+                    return testItems;
+                }
+                emptyMessage: i18n.tr("No items found")
+                onItemClicked: feedbackLabel.text = "100 items test: " + item.title + " clicked"
+            }
+
+            Label {
+                text: "Performance Test - 150+ Items with Thumbnails"
+                fontSize: "large"
+                font.bold: true
+                color: "red"
+            }
+
+            CardList {
+                height: units.gu(40)
+                width: parent.width
+                showSearchBar: true
+                searchPlaceholder: i18n.tr("Search in 150+ items...")
+                items: {
+                    var testItems = [];
+                    var categories = ["Documents", "Photos", "Videos", "Music", "Archives"];
+                    var sizes = ["1.2 MB", "3.4 MB", "15.7 MB", "8.9 MB", "256 KB", "2.1 GB"];
+                    for (var i = 0; i < 150; i++) {
+                        var category = categories[i % categories.length];
+                        var hasThumb = (i % 3 === 0 || i % 3 === 1); // 2/3 have thumbnails
+                        testItems.push({
+                                "title": category + " " + (i + 1),
+                                "subtitle": "File size: " + sizes[i % sizes.length] + " - Item #" + (i + 1),
+                                "thumbnailSource": hasThumb ? "https://picsum.photos/200/200?random=" + i : "",
+                                "icon": hasThumb ? "" : (i % 2 === 0 ? "document-open" : "folder")
+                            });
+                    }
+                    return testItems;
+                }
+                emptyMessage: i18n.tr("No items found in performance test")
+                onItemClicked: feedbackLabel.text = "Performance test: " + item.title + " clicked"
+            }
         }
     }
 

@@ -10,13 +10,10 @@ A filterable list view component that displays items as cards with optional sear
 - `emptyMessage` (string): Message displayed when items array is empty (default: "No items")
 - `showSearchBar` (bool): Whether to show the search bar (default: false)
 - `searchPlaceholder` (string): Placeholder text for search field (default: "Search")
-- `enablePullToRefresh` (bool): Whether to enable pull-to-refresh functionality (default: false)
-- `refreshing` (bool): Whether the refresh operation is in progress (default: false)
 
 ## Signals
 
 - `itemClicked(item)`: Emitted when a card is clicked, passes the clicked item object
-- `refreshRequested()`: Emitted when pull-to-refresh is triggered (requires `enablePullToRefresh: true`)
 
 ## Item Structure
 
@@ -83,44 +80,6 @@ CardList {
     onItemClicked: {
         selectedItem = item
         processSelection()
-    }
-}
-```
-
-### List with Pull-to-Refresh
-```qml
-import "ut_components"
-
-CardList {
-    height: units.gu(40)
-    enablePullToRefresh: true
-    refreshing: dataModel.loading
-    items: dataModel.items
-    onRefreshRequested: dataModel.refresh()
-    onItemClicked: openItem(item)
-}
-```
-
-### List with Pull-to-Refresh and Search
-```qml
-import "ut_components"
-
-CardList {
-    height: parent.height
-    enablePullToRefresh: true
-    refreshing: isRefreshing
-    showSearchBar: true
-    searchPlaceholder: i18n.tr("Search contacts...")
-    items: contactsList
-    emptyMessage: i18n.tr("No contacts found")
-
-    onRefreshRequested: {
-        isRefreshing = true
-        loadContacts()
-    }
-
-    onItemClicked: {
-        pageStack.push(contactDetailPage, { contact: item })
     }
 }
 ```
