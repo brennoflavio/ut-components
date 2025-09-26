@@ -173,6 +173,113 @@ def refresh_trending():
 
 ---
 
+### delete_all_memoized()
+
+Clear all cached entries for all memoized functions.
+
+```python
+def delete_all_memoized()
+```
+
+#### Description
+This function removes all cached results for all memoized functions in the application, regardless of what functions or arguments were used. This is useful when you need to invalidate the entire cache, such as during major data updates, cache corruption recovery, or when testing. The function uses partial key deletion to remove all cache entries that start with the "memoize" prefix.
+
+#### Usage Examples
+
+**Clear All Caches After Major Update:**
+```python
+from src.ut_components import setup
+from src.ut_components.memoize import memoize, delete_all_memoized
+
+setup(app_name="MyApp")
+
+@memoize(ttl_seconds=3600)
+def get_user_data(user_id: str):
+    return fetch_from_database(user_id)
+
+@memoize(ttl_seconds=1800)
+def get_product_info(product_id: int):
+    return fetch_product_details(product_id)
+
+# Use functions normally - results are cached
+user = get_user_data("user123")
+product = get_product_info(456)
+
+# Major system update or data migration
+perform_data_migration()
+
+# Clear ALL cached data for all memoized functions
+delete_all_memoized()
+
+# All subsequent calls will fetch fresh data
+user = get_user_data("user123")  # Fetches from database
+product = get_product_info(456)  # Fetches product details
+```
+
+**Clear Cache in Test Setup/Teardown:**
+```python
+@memoize(ttl_seconds=3600)
+def expensive_calculation(x: int, y: int):
+    return complex_math_operation(x, y)
+
+@memoize(ttl_seconds=1800)
+def api_request(endpoint: str):
+    return requests.get(endpoint).json()
+
+def setup_tests():
+    # Clear all caches before running tests
+    delete_all_memoized()
+
+def teardown_tests():
+    # Clean up all caches after tests
+    delete_all_memoized()
+
+def test_suite():
+    setup_tests()
+    try:
+        # Run tests with clean cache
+        run_all_tests()
+    finally:
+        teardown_tests()
+```
+
+**Cache Corruption Recovery:**
+```python
+def handle_cache_corruption():
+    try:
+        # Attempt to use cached functions
+        data = get_cached_data()
+    except CacheCorruptionError:
+        # Clear all memoized data and retry
+        delete_all_memoized()
+        data = get_cached_data()  # Will fetch fresh data
+```
+
+**Development/Debug Cache Reset:**
+```python
+# Admin endpoint to clear all caches
+def admin_clear_all_caches():
+    delete_all_memoized()
+    return {"status": "All memoization caches cleared"}
+
+# CLI command for development
+if __name__ == "__main__":
+    import sys
+    if "--clear-cache" in sys.argv:
+        delete_all_memoized()
+        print("All memoization caches cleared")
+```
+
+#### Important Notes
+- Removes ALL cached entries for ALL memoized functions in the application
+- Does not require function references - clears everything
+- Affects all functions decorated with @memoize
+- Safe to call even if no cache entries exist
+- Use with caution in production as it will cause temporary performance impact
+- Useful for testing, development, and cache recovery scenarios
+
+---
+
 ### hash_function_name()
 
 Generate a unique hash identifier for a function based on its name and module.
