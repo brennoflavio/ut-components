@@ -176,6 +176,15 @@ MainView {
                         }
                     }
 
+                    ActionButton {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: "Event"
+                        iconName: "view-grid-symbolic"
+                        onClicked: {
+                            pageStack.push(Qt.resolvedUrl("EventPage.qml"));
+                        }
+                    }
+
                 }
 
             }
