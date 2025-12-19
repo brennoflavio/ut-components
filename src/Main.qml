@@ -167,6 +167,15 @@ MainView {
                         }
                     }
 
+                    ActionButton {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: "Toast"
+                        iconName: "view-grid-symbolic"
+                        onClicked: {
+                            pageStack.push(Qt.resolvedUrl("ToastPage.qml"));
+                        }
+                    }
+
                 }
 
             }
