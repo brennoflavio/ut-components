@@ -1,36 +1,36 @@
-import QtQuick 2.12
 import Lomiri.Components 1.3
+import QtQuick 2.12
 import "qml"
 
 Page {
     id: numberOptionPage
+
     visible: false
     anchors.fill: parent
 
-    header: AppHeader {
-        id: pageHeader
-        pageTitle: "NumberOption"
-        isRootPage: false
-        appIconName: ""
-        showSettingsButton: false
-    }
-
     Label {
         id: feedbackLabel
+
+        text: "Interact with any NumberOption to see feedback"
+        font.bold: true
+        visible: true
+        horizontalAlignment: Text.AlignHCenter
+
         anchors {
             top: pageHeader.bottom
             left: parent.left
             right: parent.right
             margins: units.gu(2)
         }
-        text: "Interact with any NumberOption to see feedback"
-        font.bold: true
-        visible: true
-        horizontalAlignment: Text.AlignHCenter
+
     }
 
     Flickable {
         id: pageFlickable
+
+        contentHeight: content.height
+        clip: true
+
         anchors {
             top: feedbackLabel.bottom
             left: parent.left
@@ -41,11 +41,10 @@ Page {
             rightMargin: units.gu(2)
             bottomMargin: units.gu(2)
         }
-        contentHeight: content.height
-        clip: true
 
         Column {
             id: content
+
             width: parent.width
             spacing: units.gu(2)
 
@@ -241,11 +240,14 @@ Page {
                 width: parent.width
                 height: units.gu(2)
             }
+
         }
+
     }
 
     BottomBar {
         id: bottomBar
+
         anchors {
             left: parent.left
             right: parent.right
@@ -256,5 +258,16 @@ Page {
             iconName: "back"
             onClicked: pageStack.pop()
         }
+
     }
+
+    header: AppHeader {
+        id: pageHeader
+
+        pageTitle: "NumberOption"
+        isRootPage: false
+        appIconName: ""
+        showSettingsButton: false
+    }
+
 }

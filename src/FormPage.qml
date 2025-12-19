@@ -1,40 +1,36 @@
-import QtQuick 2.12
 import Lomiri.Components 1.3
+import QtQuick 2.12
 import "qml"
 
 Page {
     id: formPage
+
     visible: false
     anchors.fill: parent
 
-    header: AppHeader {
-        id: pageHeader
-        pageTitle: "FormPage"
-        isRootPage: false
-        appIconName: ""
-        showSettingsButton: true
-
-        onSettingsClicked: {
-            feedbackLabel.text = "Header: Settings button clicked!";
-        }
-    }
-
     Label {
         id: feedbackLabel
+
+        text: "Click any button to test interaction"
+        font.bold: true
+        visible: true
+        horizontalAlignment: Text.AlignHCenter
+
         anchors {
             top: pageHeader.bottom
             left: parent.left
             right: parent.right
             margins: units.gu(2)
         }
-        text: "Click any button to test interaction"
-        font.bold: true
-        visible: true
-        horizontalAlignment: Text.AlignHCenter
+
     }
 
     Flickable {
         id: pageFlickable
+
+        contentHeight: content.height
+        clip: true
+
         anchors {
             top: feedbackLabel.bottom
             left: parent.left
@@ -45,11 +41,10 @@ Page {
             rightMargin: units.gu(2)
             bottomMargin: units.gu(2)
         }
-        contentHeight: content.height
-        clip: true
 
         Column {
             id: content
+
             width: parent.width
             spacing: units.gu(3)
 
@@ -62,8 +57,12 @@ Page {
 
             Form {
                 id: loginForm
+
                 buttonText: i18n.tr("Sign In")
                 buttonIconName: "go-next"
+                onSubmitted: {
+                    feedbackLabel.text = "Login Form submitted successfully!";
+                }
 
                 InputField {
                     title: "Username"
@@ -89,9 +88,6 @@ Page {
                     onToggled: feedbackLabel.text = "Remember me: " + (checked ? "enabled" : "disabled")
                 }
 
-                onSubmitted: {
-                    feedbackLabel.text = "Login Form submitted successfully!";
-                }
             }
 
             Rectangle {
@@ -109,8 +105,12 @@ Page {
 
             Form {
                 id: registrationForm
+
                 buttonText: i18n.tr("Create Account")
                 buttonIconName: "contact-new"
+                onSubmitted: {
+                    feedbackLabel.text = "Registration Form submitted - Account created!";
+                }
 
                 InputField {
                     title: "Full Name"
@@ -147,6 +147,7 @@ Page {
 
                 InputField {
                     id: passwordField
+
                     title: "Password"
                     placeholder: "Create a strong password"
                     echoMode: TextInput.Password
@@ -156,20 +157,22 @@ Page {
                 }
 
                 InputField {
+                    property bool isValid: text === passwordField.text && text.length > 0
+
                     title: "Confirm Password"
                     placeholder: "Re-enter your password"
                     echoMode: TextInput.Password
                     required: true
                     validationRegex: "^.+$"
                     errorMessage: "Passwords do not match"
-                    property bool isValid: text === passwordField.text && text.length > 0
                 }
 
                 ToggleOption {
+                    property bool isValid: checked
+
                     title: "Accept Terms & Conditions"
                     subtitle: "I agree to the terms of service"
                     checked: false
-                    property bool isValid: checked
                     onToggled: feedbackLabel.text = "Terms: " + (checked ? "accepted" : "not accepted")
                 }
 
@@ -180,9 +183,6 @@ Page {
                     onToggled: feedbackLabel.text = "Newsletter: " + (checked ? "subscribed" : "unsubscribed")
                 }
 
-                onSubmitted: {
-                    feedbackLabel.text = "Registration Form submitted - Account created!";
-                }
             }
 
             Rectangle {
@@ -200,8 +200,12 @@ Page {
 
             Form {
                 id: settingsForm
+
                 buttonText: i18n.tr("Save Settings")
                 buttonIconName: "save"
+                onSubmitted: {
+                    feedbackLabel.text = "Settings saved successfully!";
+                }
 
                 InputField {
                     title: "Display Name"
@@ -251,9 +255,6 @@ Page {
                     onToggled: feedbackLabel.text = "Analytics: " + (checked ? "enabled" : "disabled")
                 }
 
-                onSubmitted: {
-                    feedbackLabel.text = "Settings saved successfully!";
-                }
             }
 
             Rectangle {
@@ -271,8 +272,12 @@ Page {
 
             Form {
                 id: contactForm
+
                 buttonText: i18n.tr("Send Message")
                 buttonIconName: "message-new"
+                onSubmitted: {
+                    feedbackLabel.text = "Contact message sent successfully!";
+                }
 
                 InputField {
                     title: "Your Name"
@@ -307,9 +312,6 @@ Page {
                     onValueUpdated: feedbackLabel.text = "Priority set to: " + newValue
                 }
 
-                onSubmitted: {
-                    feedbackLabel.text = "Contact message sent successfully!";
-                }
             }
 
             Rectangle {
@@ -327,7 +329,11 @@ Page {
 
             Form {
                 id: minimalForm
+
                 buttonText: i18n.tr("Submit")
+                onSubmitted: {
+                    feedbackLabel.text = "Search submitted for: " + fields[0].text;
+                }
 
                 InputField {
                     title: "Search Query"
@@ -335,29 +341,19 @@ Page {
                     required: true
                 }
 
-                onSubmitted: {
-                    feedbackLabel.text = "Search submitted for: " + fields[0].text;
-                }
             }
+
         }
+
     }
 
     BottomBar {
         id: bottomBar
+
         anchors {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
-        }
-
-        leftButton: IconButton {
-            iconName: "back"
-            onClicked: feedbackLabel.text = "BottomBar: Back clicked"
-        }
-        rightButton: IconButton {
-            iconName: "info"
-            text: "Info"
-            onClicked: feedbackLabel.text = "BottomBar: Info clicked"
         }
 
         IconButton {
@@ -365,9 +361,35 @@ Page {
             text: "Add"
             onClicked: feedbackLabel.text = "BottomBar: Add with label clicked"
         }
+
         IconButton {
             iconName: "delete"
             onClicked: feedbackLabel.text = "BottomBar: Delete without label clicked"
         }
+
+        leftButton: IconButton {
+            iconName: "back"
+            onClicked: feedbackLabel.text = "BottomBar: Back clicked"
+        }
+
+        rightButton: IconButton {
+            iconName: "info"
+            text: "Info"
+            onClicked: feedbackLabel.text = "BottomBar: Info clicked"
+        }
+
     }
+
+    header: AppHeader {
+        id: pageHeader
+
+        pageTitle: "FormPage"
+        isRootPage: false
+        appIconName: ""
+        showSettingsButton: true
+        onSettingsClicked: {
+            feedbackLabel.text = "Header: Settings button clicked!";
+        }
+    }
+
 }

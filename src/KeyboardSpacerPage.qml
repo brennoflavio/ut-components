@@ -1,40 +1,36 @@
-import QtQuick 2.12
 import Lomiri.Components 1.3
+import QtQuick 2.12
 import "qml"
 
 Page {
     id: keyboardSpacerPage
+
     visible: false
     anchors.fill: parent
 
-    header: AppHeader {
-        id: pageHeader
-        pageTitle: "KeyboardSpacerPage"
-        isRootPage: false
-        appIconName: ""
-        showSettingsButton: true
-
-        onSettingsClicked: {
-            feedbackLabel.text = "Header: Settings button clicked!";
-        }
-    }
-
     Label {
         id: feedbackLabel
+
+        text: "Click any button to test interaction"
+        font.bold: true
+        visible: true
+        horizontalAlignment: Text.AlignHCenter
+
         anchors {
             top: pageHeader.bottom
             left: parent.left
             right: parent.right
             margins: units.gu(2)
         }
-        text: "Click any button to test interaction"
-        font.bold: true
-        visible: true
-        horizontalAlignment: Text.AlignHCenter
+
     }
 
     Flickable {
         id: pageFlickable
+
+        contentHeight: content.height
+        clip: true
+
         anchors {
             top: feedbackLabel.bottom
             left: parent.left
@@ -45,11 +41,10 @@ Page {
             rightMargin: units.gu(2)
             bottomMargin: units.gu(2)
         }
-        contentHeight: content.height
-        clip: true
 
         Column {
             id: content
+
             width: parent.width
             spacing: units.gu(3)
 
@@ -61,15 +56,15 @@ Page {
 
             TextField {
                 id: textField1
+
                 width: parent.width
                 placeholderText: "Tap here to show keyboard..."
                 onTextChanged: feedbackLabel.text = "Text changed: " + text
                 onActiveFocusChanged: {
-                    if (activeFocus) {
+                    if (activeFocus)
                         feedbackLabel.text = "Text field focused - keyboard should appear";
-                    } else {
+                    else
                         feedbackLabel.text = "Text field unfocused - keyboard should hide";
-                    }
                 }
             }
 
@@ -81,31 +76,37 @@ Page {
 
             TextField {
                 id: textField2
+
                 width: parent.width
                 placeholderText: "First name..."
                 onActiveFocusChanged: {
                     if (activeFocus)
                         feedbackLabel.text = "First name field focused";
+
                 }
             }
 
             TextField {
                 id: textField3
+
                 width: parent.width
                 placeholderText: "Last name..."
                 onActiveFocusChanged: {
                     if (activeFocus)
                         feedbackLabel.text = "Last name field focused";
+
                 }
             }
 
             TextField {
                 id: textField4
+
                 width: parent.width
                 placeholderText: "Email address..."
                 onActiveFocusChanged: {
                     if (activeFocus)
                         feedbackLabel.text = "Email field focused";
+
                 }
             }
 
@@ -117,15 +118,15 @@ Page {
 
             TextArea {
                 id: textArea
+
                 width: parent.width
                 height: units.gu(15)
                 placeholderText: "Type a longer message here..."
                 onActiveFocusChanged: {
-                    if (activeFocus) {
+                    if (activeFocus)
                         feedbackLabel.text = "Text area focused - keyboard appears";
-                    } else {
+                    else
                         feedbackLabel.text = "Text area unfocused";
-                    }
                 }
             }
 
@@ -138,25 +139,18 @@ Page {
 
             KeyboardSpacer {
             }
+
         }
+
     }
 
     BottomBar {
         id: bottomBar
+
         anchors {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
-        }
-
-        leftButton: IconButton {
-            iconName: "back"
-            onClicked: feedbackLabel.text = "BottomBar: Back clicked"
-        }
-        rightButton: IconButton {
-            iconName: "info"
-            text: "Info"
-            onClicked: feedbackLabel.text = "BottomBar: Info clicked"
         }
 
         IconButton {
@@ -164,9 +158,35 @@ Page {
             text: "Add"
             onClicked: feedbackLabel.text = "BottomBar: Add with label clicked"
         }
+
         IconButton {
             iconName: "delete"
             onClicked: feedbackLabel.text = "BottomBar: Delete without label clicked"
         }
+
+        leftButton: IconButton {
+            iconName: "back"
+            onClicked: feedbackLabel.text = "BottomBar: Back clicked"
+        }
+
+        rightButton: IconButton {
+            iconName: "info"
+            text: "Info"
+            onClicked: feedbackLabel.text = "BottomBar: Info clicked"
+        }
+
     }
+
+    header: AppHeader {
+        id: pageHeader
+
+        pageTitle: "KeyboardSpacerPage"
+        isRootPage: false
+        appIconName: ""
+        showSettingsButton: true
+        onSettingsClicked: {
+            feedbackLabel.text = "Header: Settings button clicked!";
+        }
+    }
+
 }

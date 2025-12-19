@@ -1,40 +1,36 @@
-import QtQuick 2.12
 import Lomiri.Components 1.3
+import QtQuick 2.12
 import "qml"
 
 Page {
     id: toggleOptionPage
+
     visible: false
     anchors.fill: parent
 
-    header: AppHeader {
-        id: pageHeader
-        pageTitle: "ToggleOption"
-        isRootPage: false
-        appIconName: ""
-        showSettingsButton: true
-
-        onSettingsClicked: {
-            feedbackLabel.text = "Header: Settings button clicked!";
-        }
-    }
-
     Label {
         id: feedbackLabel
+
+        text: "Click any button to test interaction"
+        font.bold: true
+        visible: true
+        horizontalAlignment: Text.AlignHCenter
+
         anchors {
             top: pageHeader.bottom
             left: parent.left
             right: parent.right
             margins: units.gu(2)
         }
-        text: "Click any button to test interaction"
-        font.bold: true
-        visible: true
-        horizontalAlignment: Text.AlignHCenter
+
     }
 
     Flickable {
         id: pageFlickable
+
+        contentHeight: content.height
+        clip: true
+
         anchors {
             top: feedbackLabel.bottom
             left: parent.left
@@ -45,11 +41,10 @@ Page {
             rightMargin: units.gu(2)
             bottomMargin: units.gu(2)
         }
-        contentHeight: content.height
-        clip: true
 
         Column {
             id: content
+
             width: parent.width
             spacing: units.gu(3)
 
@@ -154,6 +149,7 @@ Page {
                     checked: true
                     onToggled: feedbackLabel.text = "Mobile Data toggled: " + checked
                 }
+
             }
 
             Label {
@@ -165,6 +161,7 @@ Page {
 
             ToggleOption {
                 id: masterToggle
+
                 title: "Master Switch"
                 subtitle: "Enable/disable all child toggles below"
                 checked: true
@@ -178,6 +175,7 @@ Page {
 
             ToggleOption {
                 id: childToggle1
+
                 title: "Child Option 1"
                 checked: false
                 onToggled: feedbackLabel.text = "Child Option 1 toggled: " + checked
@@ -185,6 +183,7 @@ Page {
 
             ToggleOption {
                 id: childToggle2
+
                 title: "Child Option 2"
                 subtitle: "Depends on master switch"
                 checked: true
@@ -193,30 +192,24 @@ Page {
 
             ToggleOption {
                 id: childToggle3
+
                 title: "Child Option 3"
                 subtitle: "Also depends on master switch"
                 checked: false
                 onToggled: feedbackLabel.text = "Child Option 3 toggled: " + checked
             }
+
         }
+
     }
 
     BottomBar {
         id: bottomBar
+
         anchors {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
-        }
-
-        leftButton: IconButton {
-            iconName: "back"
-            onClicked: feedbackLabel.text = "BottomBar: Back clicked"
-        }
-        rightButton: IconButton {
-            iconName: "info"
-            text: "Info"
-            onClicked: feedbackLabel.text = "BottomBar: Info clicked"
         }
 
         IconButton {
@@ -224,9 +217,35 @@ Page {
             text: "Add"
             onClicked: feedbackLabel.text = "BottomBar: Add with label clicked"
         }
+
         IconButton {
             iconName: "delete"
             onClicked: feedbackLabel.text = "BottomBar: Delete without label clicked"
         }
+
+        leftButton: IconButton {
+            iconName: "back"
+            onClicked: feedbackLabel.text = "BottomBar: Back clicked"
+        }
+
+        rightButton: IconButton {
+            iconName: "info"
+            text: "Info"
+            onClicked: feedbackLabel.text = "BottomBar: Info clicked"
+        }
+
     }
+
+    header: AppHeader {
+        id: pageHeader
+
+        pageTitle: "ToggleOption"
+        isRootPage: false
+        appIconName: ""
+        showSettingsButton: true
+        onSettingsClicked: {
+            feedbackLabel.text = "Header: Settings button clicked!";
+        }
+    }
+
 }
