@@ -1,40 +1,36 @@
-import QtQuick 2.12
 import Lomiri.Components 1.3
+import QtQuick 2.12
 import "qml"
 
 Page {
     id: iconButtonPage
+
     visible: false
     anchors.fill: parent
 
-    header: AppHeader {
-        id: pageHeader
-        pageTitle: "IconButtonPage"
-        isRootPage: false
-        appIconName: ""
-        showSettingsButton: true
-
-        onSettingsClicked: {
-            feedbackLabel.text = "Header: Settings button clicked!";
-        }
-    }
-
     Label {
         id: feedbackLabel
+
+        text: "Click any button to test interaction"
+        font.bold: true
+        visible: true
+        horizontalAlignment: Text.AlignHCenter
+
         anchors {
             top: pageHeader.bottom
             left: parent.left
             right: parent.right
             margins: units.gu(2)
         }
-        text: "Click any button to test interaction"
-        font.bold: true
-        visible: true
-        horizontalAlignment: Text.AlignHCenter
+
     }
 
     Flickable {
         id: pageFlickable
+
+        contentHeight: content.height
+        clip: true
+
         anchors {
             top: feedbackLabel.bottom
             left: parent.left
@@ -45,11 +41,10 @@ Page {
             rightMargin: units.gu(2)
             bottomMargin: units.gu(2)
         }
-        contentHeight: content.height
-        clip: true
 
         Column {
             id: content
+
             width: parent.width
             spacing: units.gu(3)
 
@@ -92,6 +87,7 @@ Page {
                     iconName: "search"
                     onClicked: feedbackLabel.text = "Search button clicked"
                 }
+
             }
 
             Label {
@@ -127,6 +123,7 @@ Page {
                     text: "Save"
                     onClicked: feedbackLabel.text = "Save document clicked"
                 }
+
             }
 
             Label {
@@ -159,6 +156,7 @@ Page {
                     iconName: "media-skip-forward"
                     onClicked: feedbackLabel.text = "Next track"
                 }
+
             }
 
             Label {
@@ -193,6 +191,7 @@ Page {
                     text: "Next"
                     onClicked: feedbackLabel.text = "Go next"
                 }
+
             }
 
             Label {
@@ -237,6 +236,7 @@ Page {
                     iconName: "tick"
                     onClicked: feedbackLabel.text = "Confirm clicked"
                 }
+
             }
 
             Label {
@@ -270,26 +270,20 @@ Page {
                     iconName: "contact-new"
                     onClicked: feedbackLabel.text = "New contact"
                 }
+
             }
+
         }
+
     }
 
     BottomBar {
         id: bottomBar
+
         anchors {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
-        }
-
-        leftButton: IconButton {
-            iconName: "back"
-            onClicked: feedbackLabel.text = "BottomBar: Back clicked"
-        }
-        rightButton: IconButton {
-            iconName: "info"
-            text: "Info"
-            onClicked: feedbackLabel.text = "BottomBar: Info clicked"
         }
 
         IconButton {
@@ -297,9 +291,35 @@ Page {
             text: "Add"
             onClicked: feedbackLabel.text = "BottomBar: Add with label clicked"
         }
+
         IconButton {
             iconName: "delete"
             onClicked: feedbackLabel.text = "BottomBar: Delete without label clicked"
         }
+
+        leftButton: IconButton {
+            iconName: "back"
+            onClicked: feedbackLabel.text = "BottomBar: Back clicked"
+        }
+
+        rightButton: IconButton {
+            iconName: "info"
+            text: "Info"
+            onClicked: feedbackLabel.text = "BottomBar: Info clicked"
+        }
+
     }
+
+    header: AppHeader {
+        id: pageHeader
+
+        pageTitle: "IconButtonPage"
+        isRootPage: false
+        appIconName: ""
+        showSettingsButton: true
+        onSettingsClicked: {
+            feedbackLabel.text = "Header: Settings button clicked!";
+        }
+    }
+
 }

@@ -31,7 +31,7 @@ repos:
     hooks:
       - id: qmlformat
         name: Format QML files
-        entry: bash -c 'for file in "$@"; do qmlformat -i "$file" && rm -f "${file}~"; done' --
+        entry: bash -c 'for file in "$@"; do /usr/lib/qt5/bin/qmlformat -i "$file" && rm -f "${file}~"; done' --
         language: system
         files: \.qml$
         pass_filenames: true

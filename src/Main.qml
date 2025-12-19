@@ -1,52 +1,49 @@
-import QtQuick 2.12
 import Lomiri.Components 1.3
+import QtQuick 2.12
 import "qml"
 
 MainView {
     id: mainView
+
     objectName: "mainView"
     applicationName: "ut-components.brennoflavio"
-
     width: units.gu(45)
     height: units.gu(75)
 
     PageStack {
         id: pageStack
+
         Component.onCompleted: push(mainPage)
 
         Page {
             id: mainPage
+
             visible: false
             anchors.fill: parent
 
-            header: AppHeader {
-                id: pageHeader
-                pageTitle: "UT Components Demo"
-                isRootPage: true
-                appIconName: "ubuntu-store-symbolic"
-                showSettingsButton: true
-
-                onSettingsClicked: {
-                    feedbackLabel.text = "Header: Settings button clicked!";
-                }
-            }
-
             Label {
                 id: feedbackLabel
+
+                text: "Click any button to test interaction"
+                font.bold: true
+                visible: true
+                horizontalAlignment: Text.AlignHCenter
+
                 anchors {
                     top: pageHeader.bottom
                     left: parent.left
                     right: parent.right
                     margins: units.gu(2)
                 }
-                text: "Click any button to test interaction"
-                font.bold: true
-                visible: true
-                horizontalAlignment: Text.AlignHCenter
+
             }
 
             Flickable {
                 id: pageFlickable
+
+                clip: true
+                contentHeight: content.height
+
                 anchors {
                     top: feedbackLabel.bottom
                     left: parent.left
@@ -57,11 +54,10 @@ MainView {
                     rightMargin: units.gu(2)
                     bottomMargin: units.gu(2)
                 }
-                clip: true
-                contentHeight: content.height
 
                 Column {
                     id: content
+
                     width: parent.width
                     spacing: units.gu(3)
 
@@ -170,25 +166,18 @@ MainView {
                             pageStack.push(Qt.resolvedUrl("ToggleOptionPage.qml"));
                         }
                     }
+
                 }
+
             }
 
             BottomBar {
                 id: bottomBar
+
                 anchors {
                     left: parent.left
                     right: parent.right
                     bottom: parent.bottom
-                }
-
-                leftButton: IconButton {
-                    iconName: "back"
-                    onClicked: feedbackLabel.text = "BottomBar: Back clicked"
-                }
-                rightButton: IconButton {
-                    iconName: "info"
-                    text: "Info"
-                    onClicked: feedbackLabel.text = "BottomBar: Info clicked"
                 }
 
                 IconButton {
@@ -196,11 +185,39 @@ MainView {
                     text: "Add"
                     onClicked: feedbackLabel.text = "BottomBar: Add with label clicked"
                 }
+
                 IconButton {
                     iconName: "delete"
                     onClicked: feedbackLabel.text = "BottomBar: Delete without label clicked"
                 }
+
+                leftButton: IconButton {
+                    iconName: "back"
+                    onClicked: feedbackLabel.text = "BottomBar: Back clicked"
+                }
+
+                rightButton: IconButton {
+                    iconName: "info"
+                    text: "Info"
+                    onClicked: feedbackLabel.text = "BottomBar: Info clicked"
+                }
+
             }
+
+            header: AppHeader {
+                id: pageHeader
+
+                pageTitle: "UT Components Demo"
+                isRootPage: true
+                appIconName: "ubuntu-store-symbolic"
+                showSettingsButton: true
+                onSettingsClicked: {
+                    feedbackLabel.text = "Header: Settings button clicked!";
+                }
+            }
+
         }
+
     }
+
 }
