@@ -2,10 +2,11 @@
 
 set -e
 
-DOWNLOAD_URL="https://github.com/brennoflavio/ut-components/archive/refs/tags/v1.1.1.zip"
+TAG="1.2.0"
+DOWNLOAD_URL="https://github.com/brennoflavio/ut-components/archive/refs/tags/v$TAG.zip"
 TEMP_DIR="/tmp/ut-components-install-$$"
 ZIP_FILE="$TEMP_DIR/ut-components.zip"
-EXTRACTED_DIR="$TEMP_DIR/ut-components-1.1.1"
+EXTRACTED_DIR="$TEMP_DIR/ut-components-$TAG"
 
 echo "Installing UT Components library..."
 
