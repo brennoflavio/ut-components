@@ -2,7 +2,7 @@
 
 set -e
 
-DOWNLOAD_URL="https://github.com/brennoflavio/ut-components/archive/refs/tags/v1.1.1.zip"
+DOWNLOAD_URL="https://github.com/brennoflavio/ut-components/archive/refs/tags/v1.2.0.zip"
 TEMP_DIR="/tmp/ut-components-install-$$"
 ZIP_FILE="$TEMP_DIR/ut-components.zip"
 EXTRACTED_DIR="$TEMP_DIR/ut-components-1.1.1"
