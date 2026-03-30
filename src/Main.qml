@@ -142,6 +142,15 @@ MainView {
 
                     ActionButton {
                         anchors.horizontalCenter: parent.horizontalCenter
+                        text: "LoadingSpinner"
+                        iconName: "view-grid-symbolic"
+                        onClicked: {
+                            pageStack.push(Qt.resolvedUrl("LoadingSpinnerPage.qml"));
+                        }
+                    }
+
+                    ActionButton {
+                        anchors.horizontalCenter: parent.horizontalCenter
                         text: "LoadToast"
                         iconName: "view-grid-symbolic"
                         onClicked: {
