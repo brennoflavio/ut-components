@@ -10,6 +10,7 @@ class KV:
     def put(self, key: str, value: Any, ttl_seconds: Optional[int] = None) -> None
     def get(self, key: str, default: Optional[Any] = None, save_default_if_not_set: bool = False) -> Optional[Any]
     def get_partial(self, beginning: str) -> List[Tuple[str, Any]]
+    def get_partial_page(self, beginning: str, page_size: int = 50, cursor: Optional[str] = None, reverse: bool = False) -> Tuple[List[Tuple[str, Any]], Optional[str]]
     def delete(self, key: str) -> None
     def delete_partial(self, beginning: str) -> None
     def close(self) -> None
@@ -255,6 +256,85 @@ kv.put("product:clothing:shirt1", {"name": "T-Shirt", "price": 19})
 electronics = kv.get_partial("product:electronics:")
 print(f"Found {len(electronics)} electronic products")
 ```
+
+---
+
+### get_partial_page()
+
+Retrieve a page of key-value pairs where keys start with a given prefix.
+
+```python
+def get_partial_page(
+    self,
+    beginning: str,
+    page_size: int = 50,
+    cursor: Optional[str] = None,
+    reverse: bool = False,
+) -> Tuple[List[Tuple[str, Any]], Optional[str]]
+```
+
+#### Description
+Performs cursor-based pagination over keys matching the prefix, sorted by key. Supports both forward (ascending) and reverse (descending) traversal. Unlike get_partial(), which loads all matching entries into memory, this method fetches only one page at a time using the primary key index for efficient seeking.
+
+Results are sorted by key (not by value like get_partial). This is intentional — cursor pagination requires a unique, indexed sort key for correct and efficient operation.
+
+#### Parameters
+- **beginning** `(str)` - *Required*
+  The prefix to search for. All keys starting with this string will be considered.
+
+- **page_size** `(int)` - *Optional, default: 50*
+  Maximum number of entries to return per page.
+
+- **cursor** `(Optional[str])` - *Optional, default: None*
+  The cursor returned from a previous call. Pass None to start from the beginning (or end, if reverse).
+
+- **reverse** `(bool)` - *Optional, default: False*
+  If True, return results in descending key order. Useful when keys encode timestamps and you want the most recent entries first.
+
+#### Returns
+- `Tuple[List[Tuple[str, Any]], Optional[str]]` - A tuple of (results, next_cursor).
+  - **results**: list of (key, value) tuples for this page.
+  - **next_cursor**: the key to pass as `cursor` for the next page, or `None` if there are no more pages.
+
+#### Usage Examples
+
+**Forward Pagination (First Page):**
+```python
+with KV() as kv:
+    results, cursor = kv.get_partial_page("user:", page_size=10)
+    for key, value in results:
+        print(f"{key} = {value}")
+```
+
+**Forward Pagination (All Pages):**
+```python
+with KV() as kv:
+    all_results = []
+    results, cursor = kv.get_partial_page("user:", page_size=10)
+    all_results.extend(results)
+    while cursor:
+        results, cursor = kv.get_partial_page("user:", page_size=10, cursor=cursor)
+        all_results.extend(results)
+```
+
+**Reverse Pagination (Newest First):**
+```python
+with KV() as kv:
+    # Load the most recent messages
+    results, cursor = kv.get_partial_page("message:chat1:", page_size=50, reverse=True)
+
+    # Load older messages on scroll-up
+    if cursor:
+        older, cursor = kv.get_partial_page(
+            "message:chat1:", page_size=50, cursor=cursor, reverse=True
+        )
+```
+
+#### Important Notes
+- Sorts by key (ascending by default, descending with `reverse=True`), unlike `get_partial()` which sorts by value
+- Uses the primary key index for O(page_size) per page, regardless of total matching entries
+- When `next_cursor` is `None`, there are no more pages in that direction
+- Expired entries (TTL exceeded) are automatically excluded
 
 ---
 
