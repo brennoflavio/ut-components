@@ -24,9 +24,18 @@ A searchable list component with customizable item actions for Ubuntu Touch appl
 Each item in the items array can have:
 - `title` (string): Main text displayed in the item (required)
 - `subtitle` (string): Secondary text displayed below the title (optional)
-- `icon` (string): Icon name to display on the left (optional)
+- `icon` (string): Theme icon name to display on the left when `iconSource` is empty (optional)
+- `iconSource` (url): Optional custom icon file URL for the leading icon. When set, it takes precedence over `icon`.
 - `customActions` (array): Per-item actions that override global itemActions (optional)
 - `actionData` (object): Additional data passed with actionTriggered signal (optional)
+
+Each action object in `itemActions` or `customActions` can have:
+- `id` (string): Action identifier
+- `iconName` (string): Theme icon name used when `iconSource` is empty
+- `iconSource` (url): Optional custom icon file URL. When set, it takes precedence over `iconName`.
+- `text` (string): Optional label shown below the action icon
+- `enabled` (bool): Whether the action is clickable (optional)
+- `visible` (bool): Whether the action is shown (optional)
 
 ## Example Usage
 
@@ -46,6 +55,28 @@ ActionableList {
     onItemClicked: openFile(item)
 }
 ```
+
+### List with Custom SVG Icons
+```qml
+import "ut_components"
+
+ActionableList {
+    height: units.gu(24)
+    items: [
+        {
+            title: "Brand Hub",
+            subtitle: "Uses a custom SVG for the leading icon",
+            iconSource: Qt.resolvedUrl("../assets/logo.svg")
+        }
+    ]
+    itemActions: [
+        { id: "open", iconName: "go-next", iconSource: Qt.resolvedUrl("../assets/logo.svg"), text: "Open" }
+    ]
+    onActionTriggered: openBrandHub(item)
+}
+```
+
+`iconSource` is optional for both items and actions, but when present it overrides `icon`/`iconName`.
 
 ### List with Global Actions
 ```qml

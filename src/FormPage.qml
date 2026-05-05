@@ -264,6 +264,45 @@ Page {
             }
 
             Label {
+                text: "Branded Form - Custom Submit Icon"
+                fontSize: "large"
+                font.bold: true
+                color: theme.palette.normal.foregroundText
+            }
+
+            Form {
+                id: brandedForm
+
+                buttonText: i18n.tr("Continue with Brand")
+                buttonIconName: "go-next"
+                buttonIconSource: Qt.resolvedUrl("../assets/logo.svg")
+                onSubmitted: {
+                    feedbackLabel.text = "Branded form submitted successfully!";
+                }
+
+                InputField {
+                    title: "Workspace"
+                    placeholder: "team.example.com"
+                    required: true
+                    validationRegex: "^.{3,}$"
+                    errorMessage: "Workspace is required"
+                }
+
+                ToggleOption {
+                    title: "Keep me signed in"
+                    subtitle: "Use the branded submit button"
+                    checked: true
+                }
+
+            }
+
+            Rectangle {
+                width: parent.width
+                height: units.dp(1)
+                color: theme.palette.normal.base
+            }
+
+            Label {
                 text: "Contact Form - Validation Example"
                 fontSize: "large"
                 font.bold: true

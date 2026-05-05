@@ -79,6 +79,28 @@ Page {
             }
 
             Label {
+                text: "CardList with Custom SVG Icons"
+                fontSize: "large"
+                font.bold: true
+            }
+
+            CardList {
+                height: units.gu(18)
+                width: parent.width
+                items: [{
+                    "title": "Brand Profile",
+                    "subtitle": "Rendered from a local SVG file",
+                    "iconSource": Qt.resolvedUrl("../assets/logo.svg")
+                }, {
+                    "title": "Thumbnail still wins",
+                    "subtitle": "SVG stays hidden when a thumbnail exists",
+                    "thumbnailSource": "https://brennoflavio.com.br/trips/ouro-preto/10.jpg",
+                    "iconSource": Qt.resolvedUrl("../assets/logo.svg")
+                }]
+                onItemClicked: feedbackLabel.text = "SVG card: " + item.title
+            }
+
+            Label {
                 text: "CardList with Search Bar"
                 fontSize: "large"
                 font.bold: true

@@ -7,7 +7,8 @@ A prominent button component for primary actions in Ubuntu Touch applications. F
 ## Properties
 
 - `text` (string): The button label text to display
-- `iconName` (string): Name of the icon to display (default: "add")
+- `iconName` (string): Theme icon name used when `iconSource` is empty (default: "add")
+- `iconSource` (url): Optional custom icon file URL. When set, it takes precedence over `iconName`.
 - `backgroundColor` (color): Background color of the button (default: theme.palette.normal.positive)
 - `textColor` (color): Color of the text label (default: white)
 - `iconColor` (color): Color of the icon (default: white)
@@ -29,6 +30,20 @@ ActionButton {
     onClicked: createNewItem()
 }
 ```
+
+### Custom SVG Source
+```qml
+import "ut_components"
+
+ActionButton {
+    text: "Continue with Brand"
+    iconName: "go-next"
+    iconSource: Qt.resolvedUrl("../assets/logo.svg")
+    onClicked: continueFlow()
+}
+```
+
+`iconSource` is optional, but when both properties are provided it overrides `iconName`.
 
 ### Destructive Action
 ```qml

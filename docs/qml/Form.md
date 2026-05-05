@@ -8,7 +8,8 @@ A form container that vertically stacks input fields and exposes a single submit
 
 - `fields` (default property): Add child input components declaratively inside the form
 - `buttonText` (string): Label text displayed on the submit button (default: `i18n.tr("Submit")`)
-- `buttonIconName` (string): Icon name shown on the submit button (default: empty)
+- `buttonIconName` (string): Theme icon name used when `buttonIconSource` is empty (default: empty)
+- `buttonIconSource` (url): Optional custom icon file URL for the submit button. When set, it takes precedence over `buttonIconName`.
 - `allFieldsValid` (bool, read-only): Reflects whether every child field exposing `isValid` is currently valid
 
 ## Signals
@@ -42,3 +43,22 @@ Form {
     }
 }
 ```
+
+### Form with Custom Submit Icon
+```qml
+import "ut_components"
+
+Form {
+    buttonText: i18n.tr("Continue with Brand")
+    buttonIconName: "go-next"
+    buttonIconSource: Qt.resolvedUrl("../assets/logo.svg")
+    onSubmitted: connectWorkspace()
+
+    TextField {
+        placeholderText: i18n.tr("Workspace")
+        property bool isValid: text.length > 2
+    }
+}
+```
+
+`buttonIconSource` is optional, but when both properties are provided it overrides `buttonIconName`.

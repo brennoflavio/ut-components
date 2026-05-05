@@ -62,6 +62,20 @@ Page {
             }
 
             Label {
+                text: "Custom SVG ActionButton"
+                fontSize: "small"
+                color: theme.palette.normal.backgroundSecondaryText
+            }
+
+            ActionButton {
+                text: "Continue with Brand"
+                iconSource: Qt.resolvedUrl("../assets/logo.svg")
+                backgroundColor: "#5E35B1"
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClicked: feedbackLabel.text = "Custom SVG action button clicked"
+            }
+
+            Label {
                 text: "Destructive ActionButton"
                 fontSize: "small"
                 color: theme.palette.normal.backgroundSecondaryText

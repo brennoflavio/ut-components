@@ -6,7 +6,7 @@ A filterable list view component that displays items as cards with optional sear
 
 ## Properties
 
-- `items` (array): Array of objects containing card data (title, subtitle, icon, thumbnailSource)
+- `items` (array): Array of objects containing card data (`title`, `subtitle`, `icon`, `iconSource`, `thumbnailSource`); `thumbnailSource` takes precedence over icon rendering, and `iconSource` takes precedence over `icon`
 - `emptyMessage` (string): Message displayed when items array is empty (default: "No items")
 - `showSearchBar` (bool): Whether to show the search bar (default: false)
 - `searchPlaceholder` (string): Placeholder text for search field (default: "Search")
@@ -20,8 +20,9 @@ A filterable list view component that displays items as cards with optional sear
 Each item in the items array can have:
 - `title` (string): Main text displayed in the card
 - `subtitle` (string): Secondary text displayed below the title (optional)
-- `thumbnailSource` (string): Path or URL to an image to display as thumbnail
-- `icon` (string): Name of the icon to display (uses default icon if neither thumbnailSource nor icon is provided)
+- `thumbnailSource` (string): Path or URL to an image to display as thumbnail. When present, it takes precedence over icon rendering.
+- `icon` (string): Theme icon name used when `iconSource` is empty (uses the default fallback icon if neither `thumbnailSource`, `iconSource`, nor `icon` is provided)
+- `iconSource` (url): Optional custom icon file URL. When set, it takes precedence over `icon`.
 
 ## Example Usage
 
@@ -39,6 +40,31 @@ CardList {
     onItemClicked: console.log("Selected:", item.title)
 }
 ```
+
+### List with Custom SVG Icons
+```qml
+import "ut_components"
+
+CardList {
+    height: units.gu(24)
+    items: [
+        {
+            title: "Brand Profile",
+            subtitle: "Local SVG icon",
+            icon: "go-next",
+            iconSource: Qt.resolvedUrl("../assets/logo.svg")
+        },
+        {
+            title: "Thumbnail still wins",
+            subtitle: "The thumbnail hides the icon",
+            thumbnailSource: "file:///path/to/photo.jpg",
+            iconSource: Qt.resolvedUrl("../assets/logo.svg")
+        }
+    ]
+}
+```
+
+`iconSource` is optional, but when present it overrides `icon`. `thumbnailSource` still takes precedence over both.
 
 ### List with Search
 ```qml

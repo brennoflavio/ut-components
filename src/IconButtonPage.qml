@@ -91,6 +91,24 @@ Page {
             }
 
             Label {
+                text: "Buttons with Custom SVG Source"
+                fontSize: "large"
+                color: theme.palette.normal.backgroundText
+            }
+
+            Flow {
+                width: parent.width
+                spacing: units.gu(2)
+
+                IconButton {
+                    iconSource: Qt.resolvedUrl("../assets/logo.svg")
+                    text: "Brand"
+                    onClicked: feedbackLabel.text = "Custom SVG icon clicked"
+                }
+
+            }
+
+            Label {
                 text: "Buttons with Text Labels"
                 fontSize: "large"
                 color: theme.palette.normal.backgroundText

@@ -116,6 +116,28 @@ Page {
             }
 
             Label {
+                text: "ActionableList with custom icon sources"
+                font.bold: true
+            }
+
+            ActionableList {
+                width: parent.width
+                height: units.gu(20)
+                itemActions: [{
+                    "id": "open",
+                    "iconSource": Qt.resolvedUrl("../assets/logo.svg"),
+                    "text": "Open"
+                }]
+                items: [{
+                    "id": 16,
+                    "title": "Brand Hub",
+                    "subtitle": "Uses SVG for the leading icon",
+                    "iconSource": Qt.resolvedUrl("../assets/logo.svg")
+                }]
+                onActionTriggered: feedbackLabel.text = "ActionableList SVG action on " + item.title
+            }
+
+            Label {
                 text: "ActionableList with actions"
                 font.bold: true
             }

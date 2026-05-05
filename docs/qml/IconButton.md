@@ -6,7 +6,8 @@ A circular button component that displays an icon with an optional text label be
 
 ## Properties
 
-- `iconName` (string): The name of the icon to display (default: "settings")
+- `iconName` (string): Theme icon name used when `iconSource` is empty (default: "settings")
+- `iconSource` (url): Optional custom icon file URL. When set, it takes precedence over `iconName`.
 - `text` (string): Optional text label to display below the icon (default: "")
 
 ## Signals
@@ -24,6 +25,20 @@ IconButton {
     onClicked: console.log("Add button clicked")
 }
 ```
+
+### Custom SVG Source
+```qml
+import "ut_components"
+
+IconButton {
+    iconName: "edit"
+    iconSource: Qt.resolvedUrl("../assets/logo.svg")
+    text: "Brand"
+    onClicked: pageStack.push(brandPage)
+}
+```
+
+`iconSource` is optional, but when both properties are provided it overrides `iconName`.
 
 ### Icon with Text Label
 ```qml
