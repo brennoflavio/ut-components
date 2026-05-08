@@ -116,6 +116,42 @@ Page {
             }
 
             Label {
+                text: "ActionableList article navigation"
+                font.bold: true
+            }
+
+            ActionableList {
+                width: parent.width
+                height: units.gu(24)
+                showSearchBar: true
+                searchPlaceholder: "Search articles"
+                searchFields: ["title", "subtitle", "author", "feedTitle"]
+                items: [{
+                    "id": 41,
+                    "title": "Ubuntu Touch update roundup",
+                    "subtitle": "Jane Doe • UBports News",
+                    "icon": "rssreader-app-symbolic",
+                    "author": "Jane Doe",
+                    "feedTitle": "UBports News"
+                }, {
+                    "id": 42,
+                    "title": "Lomiri app performance tips",
+                    "subtitle": "Alex Smith • Developer Weekly",
+                    "icon": "rssreader-app-symbolic",
+                    "author": "Alex Smith",
+                    "feedTitle": "Developer Weekly"
+                }, {
+                    "id": 43,
+                    "title": "Community spotlight",
+                    "subtitle": "Sam Lee • Linux Mobile",
+                    "icon": "rssreader-app-symbolic",
+                    "author": "Sam Lee",
+                    "feedTitle": "Linux Mobile"
+                }]
+                onItemClicked: feedbackLabel.text = "ActionableList: Open article " + item.title
+            }
+
+            Label {
                 text: "ActionableList with custom icon sources"
                 font.bold: true
             }
