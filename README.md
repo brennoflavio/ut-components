@@ -28,11 +28,13 @@ curl -s https://raw.githubusercontent.com/brennoflavio/ut-components/refs/heads/
 - [ConfigurationGroup](docs/qml/ConfigurationGroup.md): A titled container component for grouping related configuration controls.
 - [Form](docs/qml/Form.md): A form container that vertically stacks input fields and exposes a single submit button.
 - [IconButton](docs/qml/IconButton.md): A small circular button component that displays an icon with an optional text label below.
+- [ImageViewer](docs/qml/ImageViewer.md): A reusable image viewer with standardized zoom, panning, and app-driven adjacent navigation.
 - [InputField](docs/qml/InputField.md): A text input component with built-in validation and error handling for forms and settings.
 - [KeyboardSpacer](docs/qml/KeyboardSpacer.md): An automatic spacer component that adjusts its height to match the virtual keyboard.
 - [LoadToast](docs/qml/LoadToast.md): A full-screen loading overlay component to block the screen in long running functions.
 - [NumberOption](docs/qml/NumberOption.md): A numeric input field component with labels and validation for settings and forms.
 - [ToggleOption](docs/qml/ToggleOption.md): A toggle switch for boolean settings with title and optional subtitle.
+- [VideoViewer](docs/qml/VideoViewer.md): A reusable video viewer with standardized playback controls and app-driven adjacent navigation.
 
 # Python Components
 

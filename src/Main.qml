@@ -124,10 +124,28 @@ MainView {
 
                     ActionButton {
                         anchors.horizontalCenter: parent.horizontalCenter
+                        text: "ImageViewer"
+                        iconName: "view-grid-symbolic"
+                        onClicked: {
+                            pageStack.push(Qt.resolvedUrl("ImageViewerPage.qml"));
+                        }
+                    }
+
+                    ActionButton {
+                        anchors.horizontalCenter: parent.horizontalCenter
                         text: "InputField"
                         iconName: "view-grid-symbolic"
                         onClicked: {
                             pageStack.push(Qt.resolvedUrl("InputFieldPage.qml"));
+                        }
+                    }
+
+                    ActionButton {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: "VideoViewer"
+                        iconName: "view-grid-symbolic"
+                        onClicked: {
+                            pageStack.push(Qt.resolvedUrl("VideoViewerPage.qml"));
                         }
                     }
 
